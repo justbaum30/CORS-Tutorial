@@ -1,6 +1,233 @@
 {% extends "base.html" %}
 {% set active_page = "Tutorial" %}
 {% block title %}CORS Tutorial{% endblock %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="css/codemirror.css">
+<link rel="stylesheet" href="css/codemirror-neat.css">
+<link rel="stylesheet" type="text/css" href="css/tutorial.css">
+<script src="js/codemirror.js"></script>
+<script src="js/codemirror-js.js"></script>
+<script src="js/tutorial.js"></script>
+{% endblock %}
 {% block content %}
-<p>Add stuff here for the tutorial page</p>
+<div class="container main">
+	<div class="row">
+		<h1>Creating a CORS Enabled Application</h1>
+		<div class="col-md-3">
+			<ul class="nav nav-stacked" id="side-nav" data-spy="affix" data-offset-top="75">
+				<li><a href="#nav-introduction">Introduction<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-clientside">Client-Side<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-serverside">Server-Side<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-resources">Resources<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class="col-md-9" role="main" data-spy="scroll" data-target="#side-nav">
+			<div id="nav-introduction">
+				<h2>Introduction</h2>
+				<p>
+					If you've gotten to this point you understand how CORS is used, the shortcomings of alternatives such as JSON-P or
+					custom proxies, and how CORS works behind the scenes.  Think you got it?  If so then let get started!
+				</p>
+				<p>
+					In this tutorial, we'll be using <a href="https://developers.google.com/appengine/">Google App Engine</a> 
+					(in Python) for our web server and use <a href="http://jquery.com">jQuery</a> to create the CORS request.  I recommend you
+					familiarize yourself with both before starting the tutorial.
+				</p>
+			</div>
+			
+			<div id="nav-clientside">
+				<h2>Client-Side</h2>
+				<p>
+					In this section we are going to explain how to create a CORS request using jQuery.  Thankfully, the jQuery 
+					<a href="http://api.jquery.com/jQuery.ajax/">$.ajax()</a> method makes creating the CORS request very simple.
+					You could also manually create the XMLHttpRequest (XHR) object, but jQuery abstracts this mess for us and keeps
+					the syntax clean and the implementation browser generic.  Unfortunately, to support IE8 & IE9 you must create the request manually.
+				</p>
+				<p>
+					<i>Note: Because this is a relatively new standard, not all browsers support it, so I recommend checking 
+					the $.support.cors flag to make sure the user is using a supported browser.  For reference here are the supported browsers:</i>
+				</p>
+				<table class="table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Chrome</th>
+							<th>Firefox</th>
+							<th>Safari</th>
+							<th>Opera</th>
+							<th>Internet Explorer</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Version</td>
+							<td class="success">3+</td>
+							<td class="success">3.5+</td>
+							<td class="success">4+</td>
+							<td class="success">12+</td>
+							<td class="success">8+</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<h4>withCredentials</h4>
+				<p>
+					Before we start writing JavaScript, lets talk about the XHR.withCredentials property.  By default CORS requests do
+					not send or set any cookies.  If you would like to include this as part of the request, you must set the withCredentials
+					property to true.  A response header will also need to be set server-side, but we'll talk about this more later.
+				</p>
+				
+				<h4>Creating the $.ajax Request</h4>
+				<p>The settings for the CORS request are as follows:</p>
+				<ul>
+					<li>Type - The type of HTTP request you are making. Non-GET requests may require a preflight request.</li>
+					<li>URL - String containing the URL to which the request is sent.</li>
+					<li>Content Type - The MIME type expected back from the server.  MIME types such as json and JavaScript 
+						may require a preflight request.</li>
+					<li>XHR Fields - Set the withCredentials property here.</li>
+					<li>Headers - Object of custom headers you may want to include in the CORS request.  Custom headers
+						will require a preflight request.</li>
+				</ul>
+				<p>Here is a template for making a CORS request to your server:</p>
+				<pre>
+$.ajax({
+type: 'GET',
+url: 'http://my.server.com',
+contentType: 'text/plain',
+xhrFields: {
+withCredentials: false
+},
+headers: {
+X-Custom-Header: CustomValue
+},
+success: function() {
+// Success callback function
+},
+error: function() {
+// Failure callback function
+}
+});
+				</pre>
+				
+				<h4>Testing What We've Learned</h4>
+				<p>
+					First we are going to make a CORS request to a server that is not CORS enabled.  Make an $.ajax GET request
+					to <span class="text-primary">http://test.com</span> with a content type of 'application/json'.  
+					You can type this request into the JavaScript console at the bottom of this page.  You should see an 
+					same-origin policy error if entered correctly.
+				</p>
+				<p>
+					Now try making a CORS request to a CORS enabled server.  Make the same $.ajax call to 
+					<span class="text-primary">http://test2.com</span> with the same settings.  If successful, you should 
+					see a success message in the output console.  If all goes well you are ready to start enabling CORS on your server!
+				</p>
+			</div>
+			
+			<div id="nav-serverside">
+				<h2>Server-Side</h2>
+				<p>
+					In this section we are going to explain how to get your server ready for a CORS request.  The implementation
+					details will be using Google App Engine (GAE) in Python but concepts will be transferable to other server platforms.  
+					For details on other platform implementations check out <a href="http://enable-cors.org/server.html">enable-cors.org</a>.
+				</p>
+				<p>
+					With Google App Engine there are two implementation strategies we will discuss: editing the app.yaml or editing
+					your server endpoints.  If the resources you sharing cross-domain are static files (js,json,etc.) and the platform you
+					will be using is GAE, then I recommend using the app.yaml strategy.  It is simpler and will make the code you are working
+					with on a regular basis cleaner.  If you are using another platform or will be using the 'POST' request, you will have 
+					to edit your server endpoints.
+				</p>
+				<p><i>Note: Going forward we will assume that you have read the <a href="">CORS</a> page.</i></p>
+				
+				<h4>Editing the app.yaml</h4>
+				<p>
+					On the GAE platform, each application has a app.yaml file that specifies how URL paths correspond to request handlers and 
+					static files.  The file is usually used to route the URL path to the correct location, but you can also use 'http_headers'
+					setting to attach headers to the response.  Better yet, there is no need to distinguish between simple or complex CORS requests 
+					- the options will handle it for you.
+				</p>
+				<p>
+					Recall that all CORS-specific headers start with 'Access-Control' and the 'Access-Control-Allow-Origin' header is required for
+					all CORS requests.  Below is an example app.yaml handler showing just how easy it is to add to your application.  In this example
+					we are routing all JavaScript static files to the '\js' folder and attaching the corresponding headers to the response.  Check out the 
+					<a href="https://developers.google.com/appengine/docs/python/config/appconfig">app.yaml documentation</a> if this looks like gibberish.
+				</p>
+				<p><i>Note: Spaces and indentations matter in .yaml files!!</i></p>
+				<pre>
+handlers:
+- url: /(.*\.js)
+mime_type: text/javascript
+static_files: js/\1
+upload: js/(.*\.js)
+http_headers:
+Access-Control-Allow-Origin: '*'
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: X-Custom-Header
+				</pre>
+				<p>
+					That's it!  You should now be able to access your JavaScript files from any origin using the GET or POST methods and may use the 
+					'X-Custom-Header' header in your request.  If you have more complex needs, read on to see how to configure your endpoints to allow 
+					cross-origin sharing.
+				</p>
+				
+				<h4>Editing Your Endpoints</h4>
+				<p>
+					When baking the CORS implementation into your endpoints, you can modify your response based on which endpoints are hit, the type of
+					request made, and the data being sent from the server.  Recall that the preflight request is actually an OPTION request, so if your
+					requests will be complex you will need to add the OPTION endpoint.  This is unnecessary if no preflight requests will be made.
+				</p>
+				<p>
+					For simple CORS requests, you can simply add the response headers into your existing endpoints.  To do so use the 
+					<a href="https://developers.google.com/appengine/docs/python/tools/webapp/responseclass">self.response.headers.add_header()</a> 
+					method as shown:
+				</p>
+				<pre>
+class CORSEnabledHandler(webapp.RequestHandler):
+def get(self):
+self.response.headers.add_header("Access-Control-Allow-Origin", "*")
+self.response.headers['Content-Type'] = 'text/csv'
+self.response.out.write(self.dump_csv())					
+				</pre>
+				<p>
+					For complex CORS requests that require a preflight request, the OPTION request handler may add the more complex headers mentioned
+					previously such as 'Access-Control-Allow-Headers'.  Be aware that the preflight request may be cached so you should add headers that
+					would apply to all possible requests.  Here is a sample OPTION handler:
+				</p>
+				<pre>
+class CORSEnabledHandler(webapp.RequestHandler):
+def option(self):
+self.response.headers.add_header("Access-Control-Allow-Origin", "*")
+self.response.headers.add_header("Access-Control-Allow-Methods", "GET, POST")
+self.response.headers.add_header("Access-Control-Allow-Headers", "X-Custom-Header")
+self.response.headers['Content-Type'] = 'text/csv'
+self.response.out.write(self.dump_csv())	
+				</pre>
+				<p>
+					Your other request handlers should be the same as a simple CORS request.  You should now have a working CORS enabled application,
+					congratulations!  I hope you learned a lot and I recommend you check out the resources below for more information.  Good luck!
+				</p>
+			</div>
+			
+			<div id="nav-resources">
+				<h2>Resources</h2>
+				<ul>
+					<li>HTML5 Rocks CORS Tutorial - <a href="http://www.html5rocks.com/en/tutorials/cors/">Link</a></li>
+					<li>Enable-CORS - <a href="http://enable-cors.org/">Link</a></li>
+					<li>W3C CORS Documentation - <a href="http://www.w3.org/TR/cors/">Link</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block footer %}
+<div class="container code-bar">
+	<div class="row">
+		<textarea class="code-text" id="code">//Insert JavaScript code here</textarea>
+		<button id="run-button" onclick="evaluate()" type="button">Run</button>
+		<textarea class="code-text" id="output">Code is output here</textarea>
+	</div>
+</div>
 {% endblock %}

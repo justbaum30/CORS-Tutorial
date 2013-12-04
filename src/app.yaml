@@ -12,14 +12,11 @@ handlers:
 - url: /img
   static_dir: img
   
-- url: /(.*\.js)
-  mime_type: text/javascript
-  static_files: js/\1
-  upload: js/(.*\.js)
-  http_headers:
-    Access-Control-Allow-Origin: '*'
-    Access-Control-Allow-Methods: GET, POST
-    Access-Control-Allow-Headers: X-Custom
+- url: /js
+  static_dir: js
+
+- url: /fonts
+  static_dir: fonts
   
 - url: /.*
   script: main.application

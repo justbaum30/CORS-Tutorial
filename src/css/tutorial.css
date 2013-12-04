@@ -1,0 +1,12 @@
+.main { padding-bottom: 225px; }
+.row { padding: 10px 0px; }
+
+#side-nav { margin-top: 30px; }
+#side-nav a { border: 1px solid #e5e5e5; margin: 0 0 -3px; }
+.affix { width: 210px; position: fixed; top: 50px; }
+@media(max-width:991px){ .affix { position: static; width: auto; } }
+
+.CodeMirror { border: 1px solid; height: 200px; width: 400px; float: left; margin-left: 20px; }
+.code-bar { width: 960px; }
+footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background: #f8f8f8; border-top: 1px solid #ccc; }
+#run-button  { float: left; margin-left: 20px; }
