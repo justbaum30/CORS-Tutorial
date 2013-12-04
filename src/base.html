@@ -22,10 +22,14 @@
 						<a class="navbar-brand" href="/">Learning CORS</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-navbar-collapse">
+					{% set navigation_bar = [('/xss','XSS'),('/cors','CORS'),('/tutorial','Tutorial')] -%}
+					{% set active_page = active_page -%}
 						<ul class="nav navbar-nav">
-							<li><a href="/xss">XSS</a></li>
-							<li><a href="/cors">CORS</a></li>
-							<li><a href="/tutorial">Tutorial</a></li>
+							{% for href, id in navigation_bar %}
+								<li{% if id == active_page %} class="active"{% endif %}>
+									<a href="{{ href|e }}">{{ id|e }}</a>
+								</li>
+							{% endfor %}
 						</ul>
 					</div>
 				</nav>
