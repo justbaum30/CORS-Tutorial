@@ -2,3 +2,8 @@ body { padding-top: 50px; }
 h4 { padding-top: 15px; }
 .container { width: 960px; }
 .glyphicon { float: right; }
+
+#side-nav { margin-top: 30px; }
+#side-nav a { border: 1px solid #e5e5e5; margin: 0 0 -3px; }
+.affix { width: 210px; position: fixed; top: 50px; }
+@media(max-width:991px){ .affix { position: static; width: auto; } }

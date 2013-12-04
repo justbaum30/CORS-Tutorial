@@ -2,5 +2,58 @@
 {% set active_page = "XSS" %}
 {% block title %}XSS{% endblock %}
 {% block content %}
-<p>Add stuff here for the XSS page</p>
+<div class="container">
+	<div class="row">
+		<h1>Cross-Site Scripting</h1>
+		<div class="col-md-3">
+			<ul class="nav nav-stacked" id="side-nav" data-spy="affix" data-offset-top="75">
+				<li><a href="#nav-introduction">Introduction<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-howitworks">How It Works?<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-cors">Google Gruyere<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class="col-md-9" role="main" data-spy="scroll" data-target="#side-nav">
+			<div id="nav-introduction">
+				<h2>Introduction</h2>
+				<p>
+					The Cross-Site Scripting (XSS) attack has gained noterity for being a rather popular attack because of the ease to conduct 
+					such an attack as well as the general lack of defense from web developers. Sites such as Facebook, Google, and more have 
+					fallen victim to these sorts of attacks.
+				</p>
+				<p>On this page, we will explain what a XSS attack is, how it works, and introduce you to Google Gruyere.</p>
+			</div>
+			
+			<div id="nav-howitworks">
+				<h2>How It Works?</h2>
+				<p>
+					XSS attack attacks work by either injecting code into the site, or sending a malicious request to the sites server.
+					Injection attacks take advantage of Hyper-Text Markup Language (HTML) that compose websites. The HTML for this very page 
+					can be viewed on modern versions of Firefox, Chrome, and Internet Explorer by pressing F12. Those unfamiliar with HTML are 
+					recommended to <a href="http://www.codecademy.com/courses/html-one-o-one/0/1">here</a>
+				</p>
+				<p>A few important HTML commands are as follows:</p>
+				<p>&lt;title&gt;Things in this tag are places as a title of the document&lt;/title&gt;</p>
+				<p>&lt;body&gt;Things inside this tag are denoted to be the content of the document.&lt;/body&gt; </p>
+			</div>
+				
+				
+				<p>&lt;script&gt;alert("Anything within this tag is denoted as a script, such as JavaScript. These can be powerful commands that can be very useful to adding to the functionality and appearance of your website");&lt;/script&gt;</p>
+				<p>These commands are displayed because the '&lt;' character is not really a &lt;. In HTML, safe ways to display dangerous characters exist (&lt;title&gt; is &amp;lt;title&amp;gt;). Without these dangerous character avoiders, ANY instance of &lt; would causes the browser, which is reading an HTML document to display this page, to think what comes after it is a command. </p>
+				<p>For web developers of static pages, this isn't too big of a problem. If a page will simplely stay the HTML document that the developer writes, then by not putting the virus in their own page developers can avoid these attacks. However, message boards, forums, comment systems, e-mail listings, and many more types of websites and features will require the submission of user data that will then be displayed on sites. Without proper cleaning (such as switching '&lt;' to '&amp;lt;', a user who has entered his name as '&lt;/body&gt;&lt;MaliciousScript.js&gt;&lt;body&gt;' may compromise the site for all that load the page by tricking the browser, reading the users name as part of the HTML code, to think there is a break in the body, followed by the intention to run MaliciousScript.js! More on these sorts of attacks can be found below in the section titles "Quick Guided Examples with Gruyere". Fortunately, because Same-Origin Policy is built into all modern browsers, a user that has acquired these methods is limited in their capability for an attack and are unable to request code from other sites or send information to other sites.</p>
+				<p>The other type of XSS attack, and inapproprate request attack, is when a different domain requests malicious information from a server, like a password, the information currently being displayed, or a bank statement! Because Same-Origin Policy still blocks these sorts of requests, it generally requires fault on the behalf of the web developer for one of these faults to occur, such as misconfiguring CORS to allow all origins to share with the page!</p>
+				<p>These dangers are currently being defended with the Same-Origin policy and Content Security Policy, both are security standards built into modern browsers. Same-Origin Policy disallows content to be loaded into HTML from a different domain. This means malicious code injected in CNN.com can't call malicious code from Hacker.ru. However, there are many complications that arise from the Same-Origin Policy that will be covered in the CORS page of this tutorial.</p>
+		
+			
+			<div id="nav-gruyere">
+				<h2>Guided Examples with Gruyere</h2>
+				<p>A tool released by Google named Gruyere has been released to help users gain firsthand experiance on what a XSS attack is, the ease of it's launch, and a small quick idea of how to prevent it. The project runs on a contained but unsecure mock-website which allows users to maliciously attack in a controlled environment. The full Google Gruyere project, along with it's full tutorials on how to exploit and then defend their system, can be found <a href="http://google-gruyere.appspot.com/">here</a>. This page, however, will give a quick rundown of a few of Google's examples just to show the dangers of these attacks in 5 minutes or so. </p>
+				<p>First, visit <a href="http://google-gruyere.appspot.com/start">Google Gruyere</a> to start your own personal instance of Google Gruyere. It's important to remember that this experiment is unsecure and the webpage given is an example of a very dangerous webpage to visit. Putting personal information in is not recommended.</p>
+				<p>After opening the new example, you should be greeted with a cheesy page where users can create snippets and post them to a messageboard-like site. The first thing to do is sign up- click the sign up button and create a username and password (do not use a real username and password). After entering that, click the 'home' button to start your mischief. For these examples, we'll be injecting the JavaScript command 'alert()'. The alert command will give easy feedback (a popup), while still being pretty harmless (you don't want to launch an attack on yourself!). It can be assumed that if you can run the alert function on a page, you'd also be able to run some arbitrary code.</p>
+				<p>The first attack doesn't require you to submit anything to the site. The point of injection will be the link for the site itself. Construct a URL by taking the current URL of the site and adding '/&lt;script&gt;alert(1)&lt;script&gt;' to the end of the URL. Then try visiting the link yourself- an alert will pop up. If you had tricked a user into visiting that link instead of the regular link for the site, malicious code could be the product.<p>
+				<p>The second attack is created by adding a new snippet. Click 'add snippet' at the top of the page and, for the snippet, enter the text " &lt;a onmouseover="alert(1)" href="#"&gt;read this!&lt;/a&gt; ". Submit and return to the homepage- your snippet should be one of the snippets on the page- a link saying 'read this!' Hovering over the link will give an example of an attack being launched!</p>
+				<p>For the final example, the refresh button on the home page will be hijacked. Create a new Snippet, but this time place this as the text: " This &lt;span style=display:none&gt;" + (alert(1),"") + "&lt;/span&gt; Snippet sure isn't suspicious! ". To see this attack in action, submit it and click the 'refresh' button on the homepage. The refresh button as successfully been hijacked by a quick and easy XSS attack!</p> 
+			</div>
+	</div>
+</div>
 {% endblock %}
