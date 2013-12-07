@@ -2,6 +2,7 @@ body { padding-top: 50px; }
 h4 { padding-top: 15px; }
 .container { width: 960px; }
 .glyphicon { float: right; }
+code { margin-bottom: 20px; }
 
 #side-nav { margin-top: 30px; }
 #side-nav a { border: 1px solid #e5e5e5; margin: 0 0 -3px; }

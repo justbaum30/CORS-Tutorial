@@ -1,5 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Learning CORS{% endblock %}
 {% block content %}
-<p>Coming soon.</p>
+<div class="container main">
+	<div class="row">
+		<h1>Learning CORS</h1>
+		<div class="col-md-3">
+			<ul class="nav nav-stacked" id="side-nav" data-spy="affix" data-offset-top="75">
+				<li><a href="#nav-welcome">Welcome<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-cors">About CORS<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+				<li><a href="#nav-support">Support<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class="col-md-9" role="main" data-spy="scroll" data-target="#side-nav">
+			<div id="nav-welcome">
+				<h2>Welcome</h2>
+				<p>
+					Hello there!  If you've come to this page then it would seem like you are interested in learning about a new
+					and exciting browser standard - Cross-Origin Resource Sharing (CORS).  If you've accidentally stumbled here,
+					stay a little longer and you may learn a thing or two.  
+				</p>
+			</div>
+			
+			<div id="nav-cors">
+				<h2>About Cross-Origin Resource Sharing</h2>
+				<p>
+					Although there is much more information in the other pages, I'll attempt to explain CORS in a nutshell.  CORS 
+					provides a way for developers to safely and easily make asynchronous cross-domain requests.  The CORS specification
+					is ideal for web applications that serve public content or other web applications who currently use insecure methods
+					such as JSONP or proxy servers.  And because CORS is supported and implemented in all modern browsers, the experience
+					is consistent and easy to add to your existing application.
+				</p>
+				<p>
+					Interested yet?  If so get started by checking out our XSS page to learn the purpose of the Same-Origin Policy.  The 
+					CORS page will give you a high-level overview of how the standard works and explains generic implementation.  The tutorial 
+					page is a walkthrough of implementing CORS client-side using jQuery and server-side using Google App Engine with Python.
+				</p>
+			</div>
+			
+			<div id="nav-support">
+				<h2>Support</h2>
+				<p>
+					This site is under active development and we hope to continue to add content and more sections as time goes on.  
+					If you feel like you could or would like to contribute to this project, it is open source and available to 
+					download and fork on <a href="https://github.com/justbaum30/CORS-Tutorial">GitHub</a>.  Thanks!
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
